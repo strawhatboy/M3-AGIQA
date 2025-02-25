@@ -1,0 +1,27 @@
+
+language_model: openbmb/MiniCPM-Llama3-V-2_5
+max_epochs: 20  # 40 epochs for 0.00001 lr; 10 epochs for 0.00002.
+pretrained: true
+freeze_backbone: true
+lr: 0.00001
+batch_size: 1 # batch_size should be 1 or taking too much vram
+num_workers: 2
+model: minicpm-xlstm
+gpu: '[0]'
+optimizer: 'adamw'
+precision: '16-mixed'
+
+# aigciqa-30k -> agiqa-3k
+dataset: agiqa-3k
+label_name: mos_quality
+pretrained_checkpoint: 'strawhat/minicpm2.5-aigciqa-20k-ft'
+data_path: '/home/cuichuan/data/agiqa-3k/directly_train_cls_minicpm_quality_multiround.jsonl'
+eval_data_path: '/home/cuichuan/data/agiqa-3k/directly_test_cls_minicpm_quality_multiround.jsonl'
+eval_data_res_path: '/home/cuichuan/data/agiqa-3k/gemini_aigciqa-30k-on-agiqa-3k-quality_lora_10_12_2024_geminipro_lr2e-6_20800_res_val.json' 
+model_max_length: 768 # trained with 768
+max_slice_nums: 4
+
+
+llm_type: 'llama3'
+patch_size: 14
+query_nums: 96  # from minicpmv2.5's config

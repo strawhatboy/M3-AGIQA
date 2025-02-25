@@ -1,0 +1,36 @@
+
+dataset: agiqa-3k
+label_name: mos_quality # mos_quality, mos_align
+language_model: openbmb/MiniCPM-Llama3-V-2_5
+max_epochs: 20  # 40 epochs for 0.00001 lr; 10 epochs for 0.00002.
+pretrained: true
+freeze_backbone: true
+lr: 0.00001
+batch_size: 1 # batch_size should be 1 or taking too much vram
+num_workers: 2
+model: minicpm-xlstm
+train_ratio: 0.8
+val_ratio: 0.2
+gpu: '[0]'
+optimizer: 'adamw' 
+precision: '16-mixed'
+
+pretrained_checkpoint: 'strawhat/minicpm2.5-agiqa-3k-ft'
+data_path: './data_processed/agiqa-3k/directly_train_cls_minicpm_quality_multiround.jsonl'
+eval_data_path: './data_processed/agiqa-3k/directly_test_cls_minicpm_quality_multiround.jsonl'
+eval_data_res_path: './data_processed/agiqa-3k/directly_test_cls_minicpm_quality_multiround_res.jsonl'
+
+
+# gemini on minicpm align
+
+# pretrained_checkpoint: 'strawhat/minicpm2.5-agiqa-3k-corr-ft'
+# data_path: './data_processed/agiqa-3k/gemini_train_cls_4_minicpm_alignment_multiround.jsonl' # alignment
+# eval_data_path: './data_processed/agiqa-3k/gemini_test_cls_4_minicpm_alignment_multiround.jsonl'
+# eval_data_res_path: './data_processed/agiqa-3k/gemini_agiqa-3k-alignment_lora_08_01_2024_lr2e-6_3600_res.jsonl'
+
+model_max_length: 512
+max_slice_nums: 9
+llm_type: 'llama3'
+patch_size: 14
+query_nums: 96  # from minicpmv2.5's config
+pooler: mean

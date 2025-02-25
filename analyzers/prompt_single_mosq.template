@@ -1,0 +1,8 @@
+Analyze this image generated from the text prompt: "{prompt}". it's score is {mos}, scores are between {min} and {max}, higher score is better.
+
+Provide your assessment in JSON format with the following keys:
+
+* **quality_explanation**: Describe the overall quality of the image. Consider aspects like composition, clarity, realism (if applicable), and any noticeable flaws.  
+* **alignment_explanation**: Explain how well the image reflects the elements and intent of the provided prompt. Be specific about which aspects of the prompt are successfully conveyed and which might be missing or misinterpreted. 
+
+Do not include any numerical scores in your response.  

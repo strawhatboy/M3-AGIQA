@@ -1,0 +1,18 @@
+Analyze this image generated from the text prompt: "{prompt}"
+
+The quality score is {mos_q}, the alignment score is {mos_a}, and the authenticity score is {mos_r}. Scores are between {min} and {max}, with higher scores being better.
+
+Provide your assessment in JSON format with the following keys:
+
+quality_explanation: Describe the overall quality of the image, considering aspects such as composition, clarity, and any noticeable flaws.
+alignment_explanation: Explain how well the image reflects the elements and intent of the provided prompt. Be specific about which aspects of the prompt are successfully conveyed and which might be missing or misinterpreted.
+authenticity_explanation: Discuss how closely the image resembles real artworks. Highlight any parts of the image that appear non-real or artificial.
+Do not include the numerical scores in your response.
+
+**Example:**
+```json
+{{
+  "quality_explanation": "The overall quality of the image is quite high. The composition is balanced, with the boat centered and leading the viewer's eye towards the bridge and beyond. The clarity is excellent, with sharp details on the boat, water, and surrounding cliffs. The lighting is dramatic and enhances the overall atmosphere of the scene. However, there are some noticeable flaws, such as the overly saturated colors, which can detract from the natural feel of the image.",
+  "alignment_explanation": "The image closely aligns with the prompt 'bridge over a body of water with a boat in the water.' The bridge is prominently featured, and the boat is clearly visible in the water. The scene captures the essential elements of the prompt well. However, some additional details, such as the type of bridge or the style of the boat, could have been more specific to better reflect the intent of the prompt.",
+  "authenticity_explanation": "The image has a surreal, almost dreamlike quality, which makes it less authentic as a representation of a real-world scene. The colors are highly saturated and the lighting effects are dramatic, which enhances the artistic feel but reduces the realism. The boat and the bridge look more like artistic renditions rather than actual structures, and the overall scene feels more like a digital artwork or a scene from a fantasy world rather than a photograph of a real place."
+}}```

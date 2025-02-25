@@ -1,0 +1,62 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "launch",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/main.py",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "args":[
+                // "--config", "./cfg/resnet50-agiqa-3k.yaml",
+                // "--config", "./cfg/clipiqa-agiqa-1k.yaml",
+                // "--config", "./cfg/clipiqa-agiqa-3k.yaml",
+                // "--config", "./cfg/mambaiqa-agiqa-3k.yaml",
+                // "--config", "./cfg/triambaiqa-agiqa-3k.yaml",
+                // "--config", "./cfg/vitbackbone-agiqa-3k.yaml",
+                // "--config", "./cfg/resnet50-aigciqa-30k.yaml",
+                "--config", "./cfg/minicpm-gru-agiqa-3k.yaml",
+                // "--config", "./cfg/minicpm-xlstm-agiqa-3k.yaml",
+                // "--config", "./cfg/minicpm-gru-agiqa-3k.yaml",
+                // "--config", "./cfg/minicpm-gru-aigciqa2023.yaml",
+                // "--config", "./cfg/minicpm-gru-crossdataset.yaml",
+
+                // "--config", "./cfg/visionlstm-agiqa-3k.yaml",
+                "--stage", "train",
+                // "--ckpt_path", "/home/cuichuan/workspace/iqa/AGIQA-test/checkpoints/resnet50/resnet50/3k/quality/best-epoch=346-val_SRCC=0.86.ckpt"
+                // "--cpu"
+            ],
+            "env":{
+                // "HF_ENDPOINT": "https://hf-mirror.com",
+                // "TORCH_USE_CUDA_DSA": "1",
+                "https_proxy": "http://192.168.4.127:10809",
+                "http_proxy": "http://192.168.4.127:10809",
+                "HTTPS_PROXY": "http://192.168.4.127:10809",
+                "HTTP_PROXY": "http://192.168.4.127:10809",
+                // "CUDA_VISIBLE_DEVICES": "1",
+                "PATH": "/home/cuichuan/app/cuda-12.1/bin:$PATH",
+                "LD_LIBRARY_PATH": "/home/cuichuan/app/cuda-12.1/lib64:$LD_LIBRARY_PATH",
+                "HF_ENDPOINT": ""
+            }
+        },
+        {
+            "name": "gemini",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/analyzers/gemini_image_analyzer.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}/analyzers",
+            "justMyCode": false,
+            "env": {
+                "https_proxy": "http://192.168.4.127:10809",
+                "http_proxy": "http://192.168.4.127:10809",
+                "HTTPS_PROXY": "http://192.168.4.127:10809",
+                "HTTP_PROXY": "http://192.168.4.127:10809"
+            }
+        }
+    ]
+}

@@ -1,0 +1,39 @@
+
+dataset: AIGCIQA2023
+label_name: mos_quality # !important mos_quality, mos_correspondence, mos_authenticity
+language_model: openbmb/MiniCPM-Llama3-V-2_5
+max_epochs: 60  # 40 epochs for 0.00001 lr; 10 epochs for 0.00002.
+pretrained: true
+freeze_backbone: true
+lr: 0.00002
+batch_size: 1 # batch_size should be 1 or taking too much vram
+num_workers: 2
+model: minicpm-xlstm
+train_ratio: 0.8
+val_ratio: 0.2
+gpu: '[0]'
+optimizer: 'adamw' 
+precision: '16-mixed'
+
+# for minicpm data processing and model loading
+# gemini on minicpm quality
+pretrained_checkpoint: 'strawhat/minicpm2.5-aigciqa2023-ft'
+data_path: './data_processed/aigciqa2023/gemini_on_minicpmv2_5_train_quality.json'
+eval_data_res_path: './data_processed/aigciqa2023/gemini_on_minicpmv2_5_val_quality_partial_on_quality_lora_2024_09_16_2600.json'
+
+# # alignment
+# pretrained_checkpoint: 'strawhat/minicpm2.5-aigciqa2023-corr-ft'
+# data_path: './data_processed/aigciqa2023/gemini_on_minicpmv2_5_train_alignment.json'
+# eval_data_res_path: './data_processed/aigciqa2023/gemini_on_minicpmv2_5_val_alignment_partial_on_alignment_lora_2024_09_18_2600.json' 
+
+
+# auth
+# pretrained_checkpoint: 'strawhat/minicpm2.5-aigciqa2023-auth-ft'
+# data_path: './data_processed/aigciqa2023/gemini_on_minicpmv2_5_train_authenticity.json'
+# eval_data_res_path: './data_processed/aigciqa2023/gemini_on_minicpmv2_5_val_authenticity_partial_on_authenticity_lora_2024_09_15_3600.json'
+
+model_max_length: 512
+max_slice_nums: 9
+llm_type: 'llama3'
+patch_size: 14
+query_nums: 96  # from minicpmv2.5's config
