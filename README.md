@@ -8,10 +8,14 @@ Performance comparison on quality aspect of AIGCIQA2023 dataset:
 <img src="./radar_plot.png" width="400" alt="Performance comparison on quality aspect of AIGCIQA2023 dataset" />
 
 ## Datasets & Checkpoints
-AGIQA-3k, AIGCIQA2023, AIGCIQA-20k: [GoogleDrive](https://drive.google.com/drive/folders/1-Y75CJgRpgdAVpUAC0y3tapl2xpzg8-x?usp=sharing)
-> For dataset AIGCIQA-20k, you may download the original dataset and then put descriptors in `aigciqa-20k.7z` with it.
+> Disclaimer: The datasets uploaded are from external papers and are not owned by the repository owner. They are hosted on Hugging Face or Google Drive for easier access.
 
-Fine-tuned adapters on quality aspect:
+[AGIQA-3k](https://github.com/lcysyzxdxc/AGIQA-3k-Database), [AIGCIQA2023](https://github.com/wangjiarui153/AIGCIQA2023), [AIGCIQA-20k](https://www.modelscope.cn/datasets/lcysyzxdxc/AIGCQA-30K-Image), They can be also downloaded from [GoogleDrive](https://drive.google.com/drive/folders/1-Y75CJgRpgdAVpUAC0y3tapl2xpzg8-x?usp=sharing) 
+> For dataset AIGCIQA-20k, you may download the [original dataset](https://www.modelscope.cn/datasets/lcysyzxdxc/AIGCQA-30K-Image) and then put descriptors in `aigciqa-20k.7z` with it.
+
+Also they're avaiable on Huggingface: [AGIQA-3k](https://huggingface.co/datasets/strawhat/agiqa-3k), [AIGCIQA2023](https://huggingface.co/datasets/strawhat/aigciqa2023) (Only metadata), [AIGCIQA-20k](https://huggingface.co/datasets/strawhat/aigciqa-20k).
+
+Fine-tuned adapters:
 - AGIQA-3k: [quality](https://huggingface.co/strawhat/minicpm2.5-agiqa-3k-ft), [correspondence](strawhat/minicpm2.5-agiqa-3k-corr-ft)
 - AIGCIQA2023: [quality](https://huggingface.co/strawhat/minicpm2.5-aigciqa2023-ft), [correspondence](strawhat/minicpm2.5-aigciqa2023-corr-ft), [authenticity](strawhat/minicpm2.5-aigciqa2023-auth-ft),
 - AIGCIQA-20k: [quality](https://huggingface.co/strawhat/minicpm2.5-aigciqa-20k-ft)
