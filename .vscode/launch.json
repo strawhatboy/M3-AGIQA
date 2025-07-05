@@ -19,8 +19,8 @@
                 // "--config", "./cfg/triambaiqa-agiqa-3k.yaml",
                 // "--config", "./cfg/vitbackbone-agiqa-3k.yaml",
                 // "--config", "./cfg/resnet50-aigciqa-30k.yaml",
-                "--config", "./cfg/minicpm-gru-agiqa-3k.yaml",
-                // "--config", "./cfg/minicpm-xlstm-agiqa-3k.yaml",
+                // "--config", "./cfg/minicpm-gru-agiqa-3k.yaml",
+                "--config", "./cfg/minicpm-xlstm-aigciqa2023-au.yaml",
                 // "--config", "./cfg/minicpm-gru-agiqa-3k.yaml",
                 // "--config", "./cfg/minicpm-gru-aigciqa2023.yaml",
                 // "--config", "./cfg/minicpm-gru-crossdataset.yaml",
@@ -52,6 +52,26 @@
             "cwd": "${workspaceFolder}/analyzers",
             "justMyCode": false,
             "env": {
+                "https_proxy": "http://192.168.4.127:10809",
+                "http_proxy": "http://192.168.4.127:10809",
+                "HTTPS_PROXY": "http://192.168.4.127:10809",
+                "HTTP_PROXY": "http://192.168.4.127:10809"
+            }
+        },
+        {
+            "name": "e2e",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/inference_e2e.py",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "args": [
+                "--input", "/home/cuichuan/data/agiqa-3k/images/midjourney_normal_234.jpg", 
+                "--prompt", "a mechanical human arm sticking out of the earth, cold color, soft lighting",
+                 "--aspect", "authenticity"
+            ],
+            "env": {
+                "CUDA_VISIBLE_DEVICES": "1",
                 "https_proxy": "http://192.168.4.127:10809",
                 "http_proxy": "http://192.168.4.127:10809",
                 "HTTPS_PROXY": "http://192.168.4.127:10809",

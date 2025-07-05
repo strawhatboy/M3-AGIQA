@@ -59,7 +59,7 @@ class Wrapper(pl.LightningModule):
 
         self.loss_func = self.get_loss_func()
 
-        logger.info(f'using model: \n{self.model}')
+        # logger.info(f'using model: \n{self.model}')
 
     def forward(self, batch):
         x, y = batch

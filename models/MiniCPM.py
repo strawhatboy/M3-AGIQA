@@ -70,7 +70,7 @@ class SupervisedDataset(Dataset):
         for idx, row in descriptor.iterrows():
             img_path = data_path / 'images' / row['name']
             ref_img_path = data_path/ 'images'/ row['reference'] if 'reference' in row else None
-            label = row[args['label_name']]
+            label = row[args['label_name']] * args['label_scale']
             
             all_data[str(img_path.resolve())] = (row['prompt'] if 'prompt' in row else None, img_path, ref_img_path, label)
 
@@ -638,7 +638,7 @@ class MiniCPMIQA(BaseModel):
         model_name = "openbmb/MiniCPM-Llama3-V-2_5"
         self.model = AutoModel.from_pretrained(model_name, trust_remote_code=True, torch_dtype=torch.float16).eval()    # fp16 to reduce memory usage
         self.model = PeftModel.from_pretrained(self.model, self.args['pretrained_checkpoint'], trust_remote_code=True, torch_dtype=torch.float16).eval()
-        
+    
         for param in self.model.parameters():
             param.requires_grad = False
 
