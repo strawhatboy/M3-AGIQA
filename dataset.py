@@ -1,3 +1,4 @@
+import json
 import torch
 import torch.utils.data as data
 from torchvision.transforms import v2
@@ -9,9 +10,7 @@ import pandas as pd
 from PIL import Image
 from transformers import AutoTokenizer
 
-# agiqa-3k 8:2
-# AIGCIQA2023, PKUI2I 3:1
-# AIGCIQA-30K, 7:1:2
+# 7:1:2 for all datasets
 
 IMAGENET_MEAN = [0.485, 0.456, 0.406]
 IMAGENET_STD = [0.229, 0.224, 0.225]
@@ -24,21 +23,54 @@ def to_image_transform():
 def load_and_split_data(args):
     data_path = Path(args['data_dir']) / args['dataset']
     descriptor = pd.read_csv(data_path / 'data.csv')
-
-    all_data = []
-    for idx, row in descriptor.iterrows():
-        img_path = data_path / 'images' / row['name']
-        ref_img_path = data_path/ 'images'/ row['reference'] if 'reference' in row else None
-        label = row[args['label_name']]
+    
+    if args.get('train_data', None) is not None:
+        print('using pre-split data')
+        train_data = pd.read_csv(data_path / args['train_data'])
+        val_data = pd.read_csv(data_path / args['val_data'])
         
-        all_data.append((row['prompt'] if 'prompt' in row else None, img_path, ref_img_path, label))
+        # if test_data file exists, use it, otherwise use val_data as test_data
+        if args.get('test_data', None) is not None and (data_path / args['test_data']).is_file():
+            print('using pre-split test data')
+            test_data = pd.read_csv(data_path / args['test_data'])
+        else:
+            test_data = val_data.copy()
+            
+        # convert to tuples
+        train_data = [(row['prompt'] if 'prompt' in row else None, 
+                       Path(args['data_dir']) / row['dataset'] / 'images' / row['name'] if 'dataset' in row else data_path / 'images' / row['name'], 
+                       Path(args['data_dir']) / row['dataset'] / 'images' / row['reference'] if 'dataset' in row and 'reference' in row else data_path / 'images' / row['reference'] if 'reference' in row else None, 
+                       row[args['label_name']]) for idx, row in train_data.iterrows()]
+        val_data = [(row['prompt'] if 'prompt' in row else None, 
+                     Path(args['data_dir']) / row['dataset'] / 'images' / row['name'] if 'dataset' in row else data_path / 'images' / row['name'], 
+                     Path(args['data_dir']) / row['dataset'] / 'images' / row['reference'] if 'dataset' in row and 'reference' in row else data_path / 'images' / row['reference'] if 'reference' in row else None, 
+                     row[args['label_name']]) for idx, row in val_data.iterrows()]
+        test_data = [(row['prompt'] if 'prompt' in row else None, 
+                      Path(args['data_dir']) / row['dataset'] / 'images' / row['name'] if 'dataset' in row else data_path / 'images' / row['name'], 
+                      Path(args['data_dir']) / row['dataset'] / 'images' / row['reference'] if 'dataset' in row and 'reference' in row else data_path / 'images' / row['reference'] if 'reference' in row else None, 
+                      row[args['label_name']]) for idx, row in test_data.iterrows()]
+    else:
 
-    # split to train val test
-    set_seed(args['seed'])
-    train_size = int(args['train_ratio'] * len(all_data))
-    val_size = int(args['val_ratio'] * len(all_data))
-    test_size = len(all_data) - train_size - val_size
-    train_data, val_data, test_data = data.random_split(all_data, [train_size, val_size, test_size])
+        all_data = []
+        for idx, row in descriptor.iterrows():
+            # Use dataset-specific path if 'dataset' column exists, otherwise use original path
+            if 'dataset' in row:
+                img_path = Path(args['data_dir']) / row['dataset'] / 'images' / row['name']
+                ref_img_path = Path(args['data_dir']) / row['dataset'] / 'images' / row['reference'] if 'reference' in row else None
+            else:
+                img_path = data_path / 'images' / row['name']
+                ref_img_path = data_path / 'images' / row['reference'] if 'reference' in row else None
+            
+            label = row[args['label_name']]
+            
+            all_data.append((row['prompt'] if 'prompt' in row else None, img_path, ref_img_path, label))
+
+        # split to train val test
+        set_seed(args['seed'])
+        train_size = int(args['train_ratio'] * len(all_data))
+        val_size = int(args['val_ratio'] * len(all_data))
+        test_size = len(all_data) - train_size - val_size
+        train_data, val_data, test_data = data.random_split(all_data, [train_size, val_size, test_size])
     return train_data, val_data, test_data
 
 def get_patches(image: torch.Tensor, kernel_size, stride):
@@ -106,7 +138,8 @@ class AGIDataset(VisionDataset):
         
         self.args = args
         self.data = data
-        self.tokenizer = AutoTokenizer.from_pretrained(args['language_model'], trust_remote_code=True)
+        if args['use_tokenizer']:
+            self.tokenizer = AutoTokenizer.from_pretrained(args['language_model'], trust_remote_code=True)
 
     def __len__(self):
         return len(self.data)
@@ -133,7 +166,7 @@ class AGIDataset(VisionDataset):
             ref_img = self.transforms(ref_img)
         if prompt is None:
             prompt = ""
-        if self.tokenizer is not None:
+        if self.args['use_tokenizer']:
             output = self.tokenizer(prompt, return_tensors='pt', padding='max_length', max_length=self.args['max_length'], truncation=True)
             input_ids, attention_mask = output['input_ids'].squeeze(), output['attention_mask'].squeeze()
         else:
@@ -174,3 +207,71 @@ class AIGCIQA20kDataset(AGIDataset):
         return AIGCIQA20kDataset(args, train_data, model.trans), AIGCIQA20kDataset(args, val_data, model.trans_test), AIGCIQA20kDataset(args, test_data, model.trans_test)
 
 
+class PtEngineDataset(data.Dataset):
+    def __init__(self, args, raw_data):
+        super().__init__()
+        self.args = args
+        
+        # load data
+        data_path = Path(args['data_dir']) / args['dataset']
+        descriptor = pd.read_csv(data_path / 'data.csv')
+
+        all_data = {}
+        for idx, row in descriptor.iterrows():
+            img_path = data_path / 'images' / row['name']
+            ref_img_path = data_path/ 'images'/ row['reference'] if 'reference' in row else None
+            label = row[args['label_name']]
+            
+            all_data[str(img_path.resolve())] = (row['prompt'] if 'prompt' in row else None, img_path, ref_img_path, label)
+
+        self.agi_data = all_data
+        self.raw_data = raw_data
+        
+    def __len__(self):
+        return len(self.raw_data)
+        
+    def __getitem__(self, idx):
+        # construct the InferRequest and RequestConfig
+        request_data = self.raw_data[idx]
+        request_data['messages'] = request_data['messages'][0:3]    # exclude the final result
+        # need to check if the 1st msessage has <image> token
+        # if not, then we need to add it
+        
+        img_path = self.raw_data[idx]['images'][0]
+        if img_path in self.agi_data:
+            lbl = self.agi_data[img_path][3]
+        else:
+            lbl = self.agi_data[str(Path(img_path).resolve())][3]
+        
+        return request_data, img_path, torch.tensor(lbl, dtype=torch.float32) * self.args['label_scale']
+    
+    @staticmethod
+    def load_data(args, model):
+        # data_path
+        # 
+        train_raw_data = json.load(open(args['data_path'], "r"))
+        # train_raw_data = random.sample(train_raw_data, len(train_raw_data) // 100)  # debug
+        # val_raw_data = json.load(open(args['eval_data_path'], "r"))
+
+        # use eval_data_res_path, same structure with val_raw_data
+        val_raw_data = json.load(open(args['eval_data_path'], "r"))
+        
+        # if args['dataset'] == 'aigciqa-30k':
+        #     # aigciqa-30k has test set
+        #     test_raw_data = json.load(open(args['test_data_path'], "r"))
+        #     for i in range(len(test_raw_data)):
+        #         test_raw_data[i]['messages'][1]['content'] = test_raw_data[i]['response_0']
+        #         test_raw_data[i]['messages'][3]['content'] = test_raw_data[i]['response_1']
+        #         del test_raw_data[i]['response_0']
+        #         del test_raw_data[i]['response_1']
+        # else:
+        test_raw_data = json.load(open(args['test_data_path'], "r"))
+
+        for i in range(len(test_raw_data)):
+            test_raw_data[i]['messages'][1]['content'] = test_raw_data[i]['response_0']
+            test_raw_data[i]['messages'][3]['content'] = test_raw_data[i]['response_1']
+            del test_raw_data[i]['response_0']
+            del test_raw_data[i]['response_1']
+            
+        return PtEngineDataset(args, train_raw_data), PtEngineDataset(args, val_raw_data), PtEngineDataset(args, test_raw_data)
+        

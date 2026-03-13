@@ -3,14 +3,9 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 from tqdm import tqdm
 
 WITHOUT_ID = False
-# w/o ft, w/ ID
-INPUT_TEST_RESULT_FILE = "./data/agiqa-3k/directly_test_cls_minicpm_quality_multiround_nonfinetuned.jsonl"
-
-# w/ self ft, w/ ID
-INPUT_TEST_RESULT_FILE = "./data/agiqa-3k/minicpm_agiqa-3k-quality_lora_07_27_2024_lr2e-6_3400_res.jsonl"
 
 # w/ ft, w/ ID
-INPUT_TEST_RESULT_FILE = "./data/agiqa-3k/gemini_agiqa-3k-quality_lora_08_12_2024_lr2e-6_3600_res.jsonl"
+INPUT_TEST_RESULT_FILE = "./data/agiqa-3k/gemini1.5pro-cpm2.5-q-res.json"
 
 # # w/ ft, w/o ID
 # INPUT_TEST_RESULT_FILE = "./data/agiqa-3k/directly_test_cls_minicpm_quality_res.jsonl"

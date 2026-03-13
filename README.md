@@ -4,12 +4,12 @@ This repository contains the implementation of **M3-AGIQA**, a comprehensive fra
 
 ## 🎯 Performance Overview
 
-Performance comparison on the aspects of the AIGCIQA2023 dataset:
+Paradigm comparison and performance benchmarking on the aspects of the AIGCIQA2023 dataset:
 
-<img src="./radar_plot.png" width="400" alt="Performance comparison on aspects of AIGCIQA2023 dataset" />
+<img src="./radar_plot.png" width="800" alt="Performance comparison on aspects of AIGCIQA2023 dataset" />
 
 Performance comparison on the quality aspect of the AGIQA-3K dataset:
-<img src="./srcc_plcc_plot.png" width="400" alt="Performance comparison on the quality aspect of the AGIQA-3K dataset" />
+<img src="./srcc_plcc_plot.png" width="800" alt="Performance comparison on the quality aspect of the AGIQA-3K dataset" />
 
 ## 📊 Datasets & Pre-trained Models
 
@@ -222,9 +222,12 @@ Follow these steps to adapt M3-AGIQA to your custom dataset:
 ```bash
 |--my_dataset
     |--images   # all the images
+        ...
     |--data.csv # images and their MOS score
-    |--train.json   # JSON file with 2 conversations (answers can be empty since no fine-tuning needed)
-    |--val.json     # Validation data (check examples in ./data_processed)
+    |--712_splits
+        |--train.csv   
+        |--val.csv     
+        |--test.csv
 ```
 
 **2. Generate MLLM Responses**

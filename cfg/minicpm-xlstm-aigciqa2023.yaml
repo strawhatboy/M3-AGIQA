@@ -14,12 +14,19 @@ val_ratio: 0.2
 gpu: '[0]'
 optimizer: 'adamw' 
 precision: '16-mixed'
+label_scale: 0.05
+train_data: 712_splits/train.csv
+val_data: 712_splits/val.csv
+test_data: 712_splits/test.csv
 
 # for minicpm data processing and model loading
 # gemini on minicpm quality
-pretrained_checkpoint: 'strawhat/minicpm2.5-aigciqa2023-ft'
-data_path: './data_processed/aigciqa2023/gemini_on_minicpmv2_5_train_quality.json'
-eval_data_res_path: './data_processed/aigciqa2023/gemini_on_minicpmv2_5_val_quality_partial_on_quality_lora_2024_09_16_2600.json'
+ckpt_path: 'checkpoints/minicpm-xlstm/g1.5p-cpm2.5-2023-q/best-epoch=23-val_SRCC=0.85.ckpt'
+pretrained_checkpoint: '/home/cuichuan/workspace/iqa/MiniCPM-V/finetune/output/gemini1.5pro-2023-q/checkpoint-2400'
+data_path: '/home/cuichuan/data/AIGCIQA2023/712_splits/gemini1.5pro_quality_train.json' # q
+eval_data_path: '/home/cuichuan/data/AIGCIQA2023/712_splits/gemini1.5pro_quality_val.json'
+# eval_data_res_path: '/home/cuichuan/data/agiqa-3k/712_splits/gemini1.5pro-cpm2.5-q-res.json'
+test_data_path: '/home/cuichuan/data/AIGCIQA2023/712_splits/gemini1.5pro-cpm2.5-q-res.json'
 
 # # alignment
 # pretrained_checkpoint: 'strawhat/minicpm2.5-aigciqa2023-corr-ft'

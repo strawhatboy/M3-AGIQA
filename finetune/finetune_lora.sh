@@ -17,8 +17,8 @@ DS_CONFIG="ds_config_zero3.json" #, use zero3 for v2.5
 # override
 # geminipro 1.5 on agiqa-3k
 OUTPUT_DIR="output/gemini_agiqa-3k_lora_07_31_2024_lr2e-6_bf16"    # this is the gemini pro1.5 on agiqa-3k
-DATA="./data_processed/agiqa-3k/directly_train_cls_minicpm_quality_multiround.jsonl"
-EVAL_DATA="./data_processed/agiqa-3k/directly_test_cls_minicpm_quality_multiround.jsonl"
+DATA="./data_processed/agiqa-3k/gemini1.5pro_quality_train.json"
+EVAL_DATA="./data_processed/agiqa-3k/gemini1.5pro_quality_val.json"
 
 
 DISTRIBUTED_ARGS="
